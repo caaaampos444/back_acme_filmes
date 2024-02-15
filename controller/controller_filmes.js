@@ -25,7 +25,14 @@ const getListarFilmes=async function(){
 }
 
 const getBuscarFilme=async function(){
-
+    let filmesJSON={}
+    let dadosFilmes=await filmeDAO.selectByNomeFilme()
+    if(dadosFilmes){
+        filmesJSON.filmes=dadosFilmes
+        return filmesJSON
+    }
+    else
+        return false
 }
 
 module.exports={

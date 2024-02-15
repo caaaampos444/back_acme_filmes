@@ -37,8 +37,20 @@ app.get('/v1/acmefilmes/filme/:idUsuario',cors(),async function(request,response
 })
 
 app.get('/v2/acmefilmes/filmes',cors(),async function(request, response){
+    let nomeFilme=request.query.nome
     let dadosFilmes=await controllerFilmes.getListarFilmes()
     if (dadosFilmes){
+        response.json(dadosFilmes)
+        response.status(200)
+    }else{
+        response.json({message: 'Nenhum registro foi encontrado.'})
+        response.status(404)
+    }
+})
+
+app.get('/v2/acmefilmes/filmes/teste',cors(),async function(request, response){
+    let dadosFilmes=await controllerFilmes.getBuscarFilme()
+    if(dadosFilmes){
         response.json(dadosFilmes)
         response.status(200)
     }else{
