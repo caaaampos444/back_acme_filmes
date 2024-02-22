@@ -36,27 +36,24 @@ app.get('/v1/acmefilmes/filme/:idUsuario',cors(),async function(request,response
     }
 })
 
-app.get('/v2/acmefilmes/filmes',cors(),async function(request, response){
-    let nomeFilme=request.query.nome
+app.get('/v2/acmefilmes/filmes',cors(),async function(response){
     let dadosFilmes=await controllerFilmes.getListarFilmes()
-    if (dadosFilmes){
-        response.json(dadosFilmes)
-        response.status(200)
-    }else{
-        response.json({message: 'Nenhum registro foi encontrado.'})
-        response.status(404)
-    }
+    response.status(dadosFilmes.status_code)
+    response.json(dadosFilmes)
+})
+
+app.get('/v2/acmefilmes/filme/:id', cors(), async function(request, response){
+    let idFilme=request.params.id
+    let dadosFilme=await controllerFilmes.getBuscarFilme(idFilme)
+    response.status(dadosFilme.status_code)
+    response.json(dadosFilme)
 })
 
 app.get('/v2/acmefilmes/filmes/teste',cors(),async function(request, response){
-    let dadosFilmes=await controllerFilmes.getBuscarFilme()
-    if(dadosFilmes){
-        response.json(dadosFilmes)
-        response.status(200)
-    }else{
-        response.json({message: 'Nenhum registro foi encontrado.'})
-        response.status(404)
-    }
+    let nomeFilme=request.query.nome
+    let dadosFilmes=await controllerFilmes.getBuscarFilmePeloNome(nomeFilme)
+    response.status(dadosFilmes.status_code)
+    response.json(dadosFilmes)
 })
 
 app.listen('8080',function(){
