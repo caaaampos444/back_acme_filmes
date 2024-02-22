@@ -56,6 +56,7 @@ const getBuscarFilmePeloNome=async function(nome){
         if(dadosFilmes){
             if(dadosFilmes.length>0){
                 filmesJSON.filmes=dadosFilmes
+                filmesJSON.status_code=200
                 return filmesJSON
             }else
                 return message.ERROR_NOT_FOUND
