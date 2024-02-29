@@ -38,7 +38,7 @@ app.get('/v1/acmefilmes/filme/:idUsuario',cors(),async function(request,response
     }
 })
 
-app.get('/v2/acmefilmes/filmes',cors(),async function(response){
+app.get('/v2/acmefilmes/filmes',cors(),async function(request, response){
     let dadosFilmes=await controllerFilmes.getListarFilmes()
     response.status(dadosFilmes.status_code)
     response.json(dadosFilmes)
