@@ -4,12 +4,14 @@ const bodyParser=require('body-parser')
 const app=express()
 app.use((request,response,next) =>{
     response.header('Acess-Control-Allow-Origin','*')
-    response.header('Acess-Control-Allow-Methods', 'GET')
+    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     app.use(cors())
     next()
 })
 
 const controllerFilmes=require('./controller/controller_filmes.js')
+
+const bodyParserJSON=bodyParser.json()
 
 app.get('/v1/acmefilmes/filme',cors(),async function(request,response,next){
     let controleFilmes=require('./controller/funcoes')
@@ -49,11 +51,18 @@ app.get('/v2/acmefilmes/filme/:id', cors(), async function(request, response){
     response.json(dadosFilme)
 })
 
-app.get('/v2/acmefilmes/filmes/teste',cors(),async function(request, response){
+app.get('/v2/acmefilmes/filmes/filme',cors(),async function(request, response){
     let nomeFilme=request.query.nome
     let dadosFilmes=await controllerFilmes.getBuscarFilmePeloNome(nomeFilme)
     response.status(dadosFilmes.status_code)
     response.json(dadosFilmes)
+})
+
+app.post('/v2/acmefilmes/filme',cors(), bodyParserJSON, async function(request, response){
+    let dadosBody=request.body
+    let resultDadosNovoFilme=await controllerFilmes.setInserirNovoFilme(dadosBody)
+    response.status(resultDadosNovoFilme.status_code)
+    response.json(resultDadosNovoFilme)
 })
 
 app.listen('8080',function(){
