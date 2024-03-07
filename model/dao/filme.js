@@ -4,28 +4,62 @@ const prisma=new PrismaClient()
 
 const insertFilme=async function(dadosFilme){
     try {
-        let sql=`insert into tbl_filme (
-            nome,
-            sinopse,
-            duracao,
-            data_lancamento,
-            data_relancamento,
-            foto_capa,
-            valor_unitario
-        ) values(
-                '${dadosFilme.nome}',
-                '${dadosFilme.sinopse}',
-                '${dadosFilme.duracao}',
-                '${dadosFilme.data_lancamento}',
-                '${dadosFilme.data_relancamento}',
-                '${dadosFilme.foto_capa}',
-                '${dadosFilme.valor_unitario}'
-        )`
-        let result=await prisma.$executeRawUnsafe(sql)
-        if(result)
-            return true
-        else
-            return false   
+
+        let sql
+
+        if(dadosFilme.data_relancamento!=''&&
+           dadosFilme.data_relancamento!=null&&
+           dadosFilme.data_relancamento!=undefined){
+
+            sql=`insert into tbl_filme (
+                nome,
+                sinopse,
+                duracao,
+                data_lancamento,
+                data_relancamento,
+                foto_capa,
+                valor_unitario
+            ) values(
+                    '${dadosFilme.nome}',
+                    '${dadosFilme.sinopse}',
+                    '${dadosFilme.duracao}',
+                    '${dadosFilme.data_lancamento}',
+                    '${dadosFilme.data_relancamento}',
+                    '${dadosFilme.foto_capa}',
+                    '${dadosFilme.valor_unitario}'
+            )`
+            let result=await prisma.$executeRawUnsafe(sql)
+            if(result)
+                return true
+            else
+                return false 
+
+           }else{
+
+            sql=`insert into tbl_filme (
+                nome,
+                sinopse,
+                duracao,
+                data_lancamento,
+                data_relancamento,
+                foto_capa,
+                valor_unitario
+            ) values(
+                    '${dadosFilme.nome}',
+                    '${dadosFilme.sinopse}',
+                    '${dadosFilme.duracao}',
+                    '${dadosFilme.data_lancamento}',
+                    null,
+                    '${dadosFilme.foto_capa}',
+                    '${dadosFilme.valor_unitario}'
+            )`
+            let result=await prisma.$executeRawUnsafe(sql)
+            if(result)
+                return true
+            else
+                return false 
+
+           }  
     } catch (error) {
         return false
     }
@@ -68,11 +102,23 @@ const selectByNomeFilme=async function(nome){
     }
 }
 
+const selectLastID=async function(){
+    try {
+        let sql='select cast(last_insert_id() as decimal) as id from tbl_filme limit 1;'
+        let rsID=await prisma.$queryRawUnsafe(sql)
+        console.log(rsID)
+        return rsID
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports={
     insertFilme,
     updateFilme,
     deleteFilme,
     selectAllFilmes,
     selectByIdFilme,
-    selectByNomeFilme
+    selectByNomeFilme,
+    selectLastID
 }

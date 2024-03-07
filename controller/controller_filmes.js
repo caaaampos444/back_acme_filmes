@@ -1,41 +1,50 @@
 const filmeDAO=require('../model/dao/filme.js')
 const message=require('../module/config.js')
 
-const setInserirNovoFilme=async function(){
-
-}
-
-const setAtualizarFilme=async function(dadosFilme){
+const setInserirNovoFilme=async function(dadosFilme){
     let novoFilmeJSON={}
-    if(dadosFilme.nome==''||dadosFilme.nome==undefined||dadosFilme.nome.length>80||
-       dadosFilme.sinopse==''||dadosFilme.sinopse==undefined||dadosFilme.sinopse.length>65000||
-       dadosFilme.duracao==''||dadosFilme.duracao==undefined||dadosFilme.duracao.length>8||
-       dadosFilme.data_lancamento==''||dadosFilme.data_lancamento==undefined||dadosFilme.data_lancamento.length!=10||
-       dadosFilme.foto_capa==''||dadosFilme.foto_capa==undefined||dadosFilme.foto_capa.length>200||
+    let ultimoID
+    if(dadosFilme.nome==''            ||dadosFilme.nome==undefined            ||dadosFilme.nome==null            ||dadosFilme.nome.length>80             ||
+       dadosFilme.sinopse==''         ||dadosFilme.sinopse==undefined         ||dadosFilme.sinopse==null         ||dadosFilme.sinopse.length>65000       ||
+       dadosFilme.duracao==''         ||dadosFilme.duracao==undefined         ||dadosFilme.duracao==null         ||dadosFilme.duracao.length>8           ||
+       dadosFilme.data_lancamento=='' ||dadosFilme.data_lancamento==undefined ||dadosFilme.data_lancamento==null ||dadosFilme.data_lancamento.length!=10 ||
+       dadosFilme.foto_capa==''       ||dadosFilme.foto_capa==undefined       ||dadosFilme.foto_capa==null       ||dadosFilme.foto_capa.length>200       ||
        dadosFilme.valor_unitario.length>6
     )
         return message.ERROR_REQUIRED_FIELDS
     else{
         let validateStatus=false
-        if(dadosFilme.data_relancamento!=null||dadosFilme.data_relancamento!='')
-            if(dadosFilme.data_relancamento.length!=10)
+        if(dadosFilme.data_relancamento!=null&&dadosFilme.data_relancamento!=''&&dadosFilme.data_relancamento!=undefined){
+            if(dadosFilme.data_relancamento.length!=10){
                 return message.ERROR_REQUIRED_FIELDS
-            else
-                validateStatus=trueBB
-        else
+            }else{
+                validateStatus=true
+            }
+        }else{
             validateStatus=true
-        
-        let novoFilme=await filmeDAO.insertFilme(dadosFilme)
-        if(novoFilme){
-            novoFilmeJSON.filme=dadosFilme
-            novoFilmeJSON.status=message.SUCCESS_CREATED_ITEM
-            novoFilmeJSON.status_code=message.SUCCESS_CREATED_ITEM.status_code
-            novoFilmeJSON.message=message.SUCCESS_CREATED_ITEM.message
-            return novoFilmeJSON
         }
-        else
-            return message.ERROR_INTERNAL_SERVER_DB
+
+        if(validateStatus){
+            let novoFilme=await filmeDAO.insertFilme(dadosFilme)
+            if(novoFilme){
+                novoFilmeJSON.filme=dadosFilme
+                novoFilmeJSON.status=message.SUCCESS_CREATED_ITEM.status
+                novoFilmeJSON.status_code=message.SUCCESS_CREATED_ITEM.status_code
+                novoFilmeJSON.message=message.SUCCESS_CREATED_ITEM.message
+                ultimoID=await filmeDAO.selectLastID()
+                dadosFilme.id=ultimoID[0].id                
+                return novoFilmeJSON
+            }
+
+            else{
+                return message.ERROR_INTERNAL_SERVER_DB
+            }
+        }
     }
+}
+
+const setAtualizarFilme=async function(){
+
 }
 
 const setExcluirFilme=async function(){
@@ -57,7 +66,7 @@ const getListarFilmes=async function(){
         return message.ERROR_INTERNAL_SERVER_DB
 }
 
-const getBuscarFilme=async function(id){
+const getBuscarFilmePeloID=async function(id){
     let idFilme=id
     let filmesJSON={}
     if(idFilme==''||idFilme==undefined||isNaN(idFilme))
@@ -100,7 +109,7 @@ module.exports={
     setInserirNovoFilme,
     setAtualizarFilme,
     setExcluirFilme,
-    getBuscarFilme,
+    getBuscarFilmePeloID,
     getBuscarFilmePeloNome,
     getListarFilmes
 }
