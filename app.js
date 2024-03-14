@@ -59,8 +59,24 @@ app.get('/v2/acmefilmes/filmes/filme',cors(),async function(request, response){
 })
 
 app.post('/v2/acmefilmes/filme',cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
     let dadosBody=request.body
-    let resultDadosNovoFilme=await controllerFilmes.setInserirNovoFilme(dadosBody)
+    let resultDadosNovoFilme=await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
+    response.status(resultDadosNovoFilme.status_code)
+    response.json(resultDadosNovoFilme)
+})
+
+app.delete('/v2/acmefilmes/deletefilme/:id', cors(), async function(request, response){
+    let idFilme=request.params.id
+    let resultFilmeDeletado=await controllerFilmes.setExcluirFilme(idFilme)
+    response.status(resultFilmeDeletado.status_code)
+    response.json(resultFilmeDeletado)
+})
+
+app.put('/v2/acmefilmes/updatefilme/:id', cors(), async function(request, response){
+    let contentType=request.headers['content-type']
+    let dadosBody=request.body
+    let resultDadosNovoFilme=await controllerFilmes.setInserirNovoFilme(dadosBody, contentType)
     response.status(resultDadosNovoFilme.status_code)
     response.json(resultDadosNovoFilme)
 })
