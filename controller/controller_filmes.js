@@ -28,6 +28,7 @@ const setInserirNovoFilme=async function(dadosFilme, contentType){
                 }
     
                 if(validateStatus){
+                    console.log(dadosFilme)
                     let novoFilme=await filmeDAO.insertFilme(dadosFilme)
                     if(novoFilme){
                         novoFilmeJSON.filme=dadosFilme
@@ -52,11 +53,36 @@ const setInserirNovoFilme=async function(dadosFilme, contentType){
     }
 }
 
-const setAtualizarFilme=async function(){
+const setAtualizarFilme=async function(id, dadosFilme, contentType){
     try {
-        
+        if(String(contentType).toLowerCase()=='application/json'){
+            let idFilme=id
+            if(idFilme==''||idFilme==undefined||isNaN(idFilme))
+                return message.ERROR_INVALID_ID
+            else{
+                let filme=await filmeDAO.selectByIdFilme(idFilme)
+                if(filme){
+                    let filmeAtualizadoJSON={}
+                    let filmeAtualizado=await filmeDAO.updateFilme(idFilme, dadosFilme)
+                    if(filmeAtualizado){
+                        filmeAtualizadoJSON.filme=dadosFilme
+                        filmeAtualizadoJSON.status=message.SUCCES_UPDATED_ITEM.status
+                        filmeAtualizadoJSON.status_code=message.SUCCES_UPDATED_ITEM.status_code
+                        filmeAtualizadoJSON.message=message.SUCCES_UPDATED_ITEM.message
+                        return filmeAtualizadoJSON
+                    }
+                    else{
+                        return message.ERROR_NOT_FOUND
+                    }
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            }
+        }else{
+            return message.ERROR_CONTENT_TYPE
+        }
     } catch (error) {
-        
+        return message.ERROR_INTERNAL_SERVER
     }
 }
 
