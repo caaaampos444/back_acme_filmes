@@ -1,7 +1,7 @@
-const filmeDAO=require('../model/dao/filme.js')
+const generoDAO=require('../model/dao/genero.js')
 const message=require('../module/config.js')
 
-const setInserirNovoFilme=async function(dadosFilme, contentType){
+const setInserirNovoGenero=async function(dadosFilme, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
             let novoFilmeJSON={}
@@ -53,7 +53,7 @@ const setInserirNovoFilme=async function(dadosFilme, contentType){
     }
 }
 
-const setAtualizarFilme=async function(id, dadosFilme, contentType){
+const setAtualizarGenero=async function(id, dadosFilme, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
             let idFilme=id
@@ -86,7 +86,7 @@ const setAtualizarFilme=async function(id, dadosFilme, contentType){
     }
 }
 
-const setExcluirFilme=async function(id){
+const setExcluirGenero=async function(id){
     try {
         let idFilme=id
         if(idFilme==''||idFilme==undefined||isNaN(idFilme))
@@ -104,26 +104,27 @@ const setExcluirFilme=async function(id){
     }
 }
 
-const getListarFilmes=async function(){
+const getListarGeneros=async function(){
     try {
-        let filmesJSON={}
-        let dadosFilmes=await filmeDAO.selectAllFilmes()
-        if(dadosFilmes){
-            if(dadosFilmes.length>0){
-                filmesJSON.filmes=dadosFilmes
-                filmesJSON.quantidade=dadosFilmes.length
-                filmesJSON.status_code=200
-                return filmesJSON
+        let generosJSON={}
+        let dadosGeneros=await generoDAO.selectAllGeneros()
+        if(dadosGeneros){
+            if(dadosGeneros.length>0){
+                generosJSON.generos=dadosGeneros
+                generosJSON.quantidade=dadosGeneros.length
+                generosJSON.status_code=200
+                return generosJSON
             }else
                 return message.ERROR_NOT_FOUND
         }else
             return message.ERROR_INTERNAL_SERVER_DB
     } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER
     }
 }
 
-const getBuscarFilmePeloID=async function(id){
+const getBuscarGeneroPeloID=async function(id){
     try {
         let idFilme=id
         let filmesJSON={}
@@ -146,7 +147,7 @@ const getBuscarFilmePeloID=async function(id){
     }
 }
 
-const getBuscarFilmePeloNome=async function(nome){
+const getBuscarGeneroPeloNome=async function(nome){
     try {
         let nomeFilme=nome
         let filmesJSON={}
@@ -171,10 +172,10 @@ const getBuscarFilmePeloNome=async function(nome){
 }
 
 module.exports={
-    setInserirNovoFilme,
-    setAtualizarFilme,
-    setExcluirFilme,
-    getBuscarFilmePeloID,
-    getBuscarFilmePeloNome,
-    getListarFilmes
+    setInserirNovoGenero,
+    setAtualizarGenero,
+    setExcluirGenero,
+    getBuscarGeneroPeloID,
+    getBuscarGeneroPeloNome,
+    getListarGeneros
 }

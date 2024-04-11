@@ -10,6 +10,7 @@ app.use((request,response,next) =>{
 })
 
 const controllerFilmes=require('./controller/controller_filmes.js')
+const controllerGeneros=require('./controller/controller_generos.js')
 
 const bodyParserJSON=bodyParser.json()
 
@@ -67,13 +68,6 @@ app.post('/v2/acmefilmes/filme',cors(), bodyParserJSON, async function(request, 
     response.json(resultDadosNovoFilme)
 })
 
-app.delete('/v2/acmefilmes/deletefilme/:id', cors(), async function(request, response){
-    let idFilme=request.params.id
-    let resultFilmeDeletado=await controllerFilmes.setExcluirFilme(idFilme)
-    response.status(resultFilmeDeletado.status_code)
-    response.json(resultFilmeDeletado)
-})
-
 app.put('/v2/acmefilmes/updatefilme/:id', cors(), bodyParserJSON, async function(request, response){
     let idFilme=request.params.id
     let contentType=request.headers['content-type']
@@ -83,6 +77,18 @@ app.put('/v2/acmefilmes/updatefilme/:id', cors(), bodyParserJSON, async function
     response.json(resultDadosNovoFilme)
 })
 
+app.delete('/v2/acmefilmes/deletefilme/:id', cors(), async function(request, response){
+    let idFilme=request.params.id
+    let resultFilmeDeletado=await controllerFilmes.setExcluirFilme(idFilme)
+    response.status(resultFilmeDeletado.status_code)
+    response.json(resultFilmeDeletado)
+})
+
+app.get('/v2/acmefilmes/generos',cors(),async function(request, response){
+    let dadosGeneros=await controllerGeneros.getListarGeneros()
+    response.status(dadosGeneros.status_code)
+    response.json(dadosGeneros)
+})
 
 app.listen('8080',function(){
     console.log('API no ar!!!')
