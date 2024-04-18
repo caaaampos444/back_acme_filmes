@@ -1,5 +1,5 @@
-create database db_teste;
-use db_teste;
+create schema acme_filmes;
+use acme_filmes;
 
 create table tbl_filme(
 	id int not null auto_increment primary key,
@@ -11,7 +11,6 @@ create table tbl_filme(
     foto_capa varchar(200) not null,
     valor_unitario float,
     id_classificacao int not null,
-    id_genero int not null,
     
     unique key(id),
     unique index(id),
@@ -21,9 +20,23 @@ create table tbl_filme(
     references tbl_classificacao(id)
 );
 
+alter table tbl_filme drop column id_genero;
+
+alter table tbl_filme_ator drop constraint FK_FILME_FILMEATOR;
+alter table tbl_filme_diretor drop constraint FK_FILME_FILMEDIRETOR;
+alter table tbl_filme_genero drop constraint FK_FILME_FILMEGENERO;
+
+select * from tbl_classificacao;
+desc tbl_classificacao;
+
+alter table tbl_filme_ator add constraint FK_FILME_FILMEATOR foreign key (id_filme) references tbl_filme(id);
+alter table tbl_filme_diretor add constraint FK_FILME_FILMEDIRETOR foreign key (id_filme) references tbl_filme(id);
+alter table tbl_filme_genero add constraint FK_FILME_FILMEGENERO foreign key (id_filme) references tbl_filme(id);
 
 show tables;
 desc tbl_filme;
+
+select * from tbl_classificacao;
 
 insert into tbl_filme(
 	nome,
@@ -73,37 +86,52 @@ insert into tbl_filme(
                     '40'
             );
     
-select * from tbl_filme;
-
-select id from tbl_filme order by id desc limit 1;
-
-select cast(last_insert_id() as decimal) as id from tbl_filme limit 1;
-
-select * from tbl_filme where nome like "Duna";
-
-delete from tbl_filme where id=33;
 
 show tables;
 
-update tbl_filme 
+update tbl_ator
 
 	set 
-		nome='Teste update',
-		sinopse='',
-		duracao='',
-		data_lancamento='2024-01-01',
-		data_relancamento='2024-01-01',
-		foto_capa='Teste',
-		valor_unitario='40'
+		id=1
+        
+where id=5;
+
+update tbl_ator
+
+	set 
+		id=2
+        
+where id=6;
+
+update tbl_ator
+
+	set 
+		id=3
+        
+where id=7;
+
+update tbl_ator
+
+	set 
+		id=4
+        
+where id=8;
+
+update tbl_diretor
+
+	set 
+		id=1
         
 where id=3;
 
-update tbl_nacionalidade 
+update tbl_diretor
 
 	set 
-		nome='Estadunidense'
+		id=2
         
-where id=1;
+where id=4;
+
+select  * from tbl_filme;
 
 update tbl_filme 
 
@@ -183,6 +211,22 @@ create table tbl_nacionalidade_ator(
     foreign key(id_ator)
     references tbl_ator(id)
 );
+
+create table tbl_nacionalidade_diretor(
+	id int not null auto_increment primary key,
+	id_nacionalidade int not null,
+    id_diretor int not null,
+    
+    constraint FK_NACIONALIDADE_NACIONALIDADEDIRETOR
+    foreign key(id_nacionalidade)
+    references tbl_nacionalidade(id),
+    
+    constraint FK_DIRETOR_NACIONALIDADEDIRETOR
+    foreign key(id_diretor)
+    references tbl_diretor(id)
+);
+
+select * from tbl_diretor;
 
 create table tbl_nacionalidade_diretor(
 	id int not null auto_increment primary key,
@@ -318,6 +362,23 @@ insert into tbl_nacionalidade_ator(
 select * from tbl_diretor;
 select * from tbl_nacionalidade_diretor;
 
+insert into tbl_sexo(
+	sigla,
+    nome
+) values(
+	'M',
+    'Masculino'
+),(
+	'F',
+    'Feminino'
+);
+
+select * from tbl_genero;
+select * from tbl_nacionalidade;
+select * from tbl_nacionalidade_diretor;
+
+desc tbl_genero;
+
 insert into tbl_nacionalidade_diretor(
 	id_nacionalidade,
     id_diretor
@@ -328,9 +389,13 @@ insert into tbl_nacionalidade_diretor(
 	2,
     2
 ),(
-	9,
+	4,
     2
 );
+
+alter table tbl_nacionalidade_diretor add constraint FK_NACIONALIDADE_NACIONALIDADEDIRETOR foreign key (id_nacionalidade) references tbl_nacionalidade(id);
+
+select * from tbl_nacionalidade_diretor;
 
 select * from tbl_filme_diretor;
 
@@ -446,6 +511,8 @@ insert into tbl_genero(
 	'Filme Policial'
 );
 
+select * from tbl_genero;
+
 insert into tbl_ator(
 	nome,
     data_nascimento,
@@ -478,14 +545,26 @@ insert into tbl_ator(
     2
 );
 
-desc tbl_nacionalidade;
+select * from tbl_ator;
 
-select * from tbl_diretor;
+select A.nome,
+		S.nome as sexo
+from tbl_ator A
+inner join
+	tbl_sexo S
+on A.id_sexo =  S.id;
+
+select D.nome,
+		S.nome as sexo
+from tbl_diretor D
+inner join
+	tbl_sexo S
+on D.id_sexo =  S.id;
 
 insert into tbl_nacionalidade(
 	nome
 ) values(
-	'Americano'
+	'Estadunidense'
 ),(
 	'Francês'
 ),(
@@ -499,6 +578,8 @@ insert into tbl_nacionalidade(
 ),(
 	'Alemão'
 );
+
+select * from tbl_nacionalidade;
 
 insert into tbl_diretor(
 	nome,

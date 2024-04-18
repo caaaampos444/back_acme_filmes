@@ -28,7 +28,6 @@ const setInserirNovoFilme=async function(dadosFilme, contentType){
                 }
     
                 if(validateStatus){
-                    console.log(dadosFilme)
                     let novoFilme=await filmeDAO.insertFilme(dadosFilme)
                     if(novoFilme){
                         novoFilmeJSON.filme=dadosFilme

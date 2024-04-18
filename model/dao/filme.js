@@ -62,6 +62,7 @@ const insertFilme=async function(dadosFilme){
 
            }  
     } catch (error) {
+        console.log(error)
         return false
     }
 }
