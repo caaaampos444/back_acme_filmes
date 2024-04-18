@@ -1,18 +1,21 @@
 const atorDAO=require('../model/dao/ator.js')
 const sexoDAO=require('../model/dao/sexo.js')
+const nacionalidadeDAO=require('../model/dao/nacionalidade.js')
 const message=require('../module/config.js')
 
 const setInserirNovoAtor=async function(dadosAtor, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
+            let dadosNacionalidades=await nacionalidadeDAO.selectAllNacionalidades()
             let novoAtorJSON={}
             let ultimoID
             if(
-            dadosAtor.nome==''            ||dadosAtor.nome==undefined            ||dadosAtor.nome==null            ||dadosAtor.nome.length>100            ||
-            dadosAtor.data_nascimento=='' ||dadosAtor.data_nascimento==undefined ||dadosAtor.data_nascimento==null ||dadosAtor.data_nascimento.length!=10 ||
-            dadosAtor.biografia==''       ||dadosAtor.biografia==undefined       ||dadosAtor.biografia==null       ||dadosAtor.biografia.length>65000     ||
-            dadosAtor.foto==''            ||dadosAtor.foto==undefined            ||dadosAtor.foto==null            ||dadosAtor.foto.length>150            ||
-            dadosAtor.id_sexo==''         ||dadosAtor.id_sexo==undefined         ||dadosAtor.id_sexo==null         ||dadosAtor.id_sexo.length>1
+            dadosAtor.nome==''             ||dadosAtor.nome==undefined             ||dadosAtor.nome==null                  ||dadosAtor.nome.length>100            ||
+            dadosAtor.data_nascimento==''  ||dadosAtor.data_nascimento==undefined  ||dadosAtor.data_nascimento==null       ||dadosAtor.data_nascimento.length!=10 ||
+            dadosAtor.biografia==''        ||dadosAtor.biografia==undefined        ||dadosAtor.biografia==null             ||dadosAtor.biografia.length>65000     ||
+            dadosAtor.foto==''             ||dadosAtor.foto==undefined             ||dadosAtor.foto==null                  ||dadosAtor.foto.length>150            ||
+            dadosAtor.id_sexo==''          ||dadosAtor.id_sexo==undefined          ||dadosAtor.id_sexo==null               ||dadosAtor.id_sexo>2                  ||
+            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade==''        ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null 
             )
                 return message.ERROR_REQUIRED_FIELDS
             else{
@@ -59,7 +62,7 @@ const setAtualizarAtor=async function(id, dadosAtor, contentType){
             if(idAtor==''||idAtor==undefined||isNaN(idAtor))
                 return message.ERROR_INVALID_ID
             else{
-                let filme=await atorDAO.selectByidAtor(idAtor)
+                let filme=await atorDAO.selectByIdAtor(idAtor)
                 if(filme){
                     let filmeAtualizadoJSON={}
                     let filmeAtualizado=await atorDAO.updateFilme(idAtor, dadosAtor)
@@ -106,14 +109,15 @@ const setExcluirAtor=async function(id){
 const getListarAtores=async function(){
     try {
         let atoresJSON={}
-        
         let dadosAtores=await atorDAO.selectAllAtores()
         if(dadosAtores){
             if(dadosAtores.length>0){
                 for (let ator of dadosAtores){
                     let sexoAtor = await sexoDAO.selectByIDSexo(ator.id_sexo)
+                    let nacionalidadeAtor = await nacionalidadeDAO.selectByIDNacionalidade(ator.id)
                     delete ator.id_sexo
                     ator.sexo = sexoAtor
+                    ator.nacionalidade = nacionalidadeAtor
                 }
                 atoresJSON.atores=dadosAtores
                 atoresJSON.quantidade=dadosAtores.length

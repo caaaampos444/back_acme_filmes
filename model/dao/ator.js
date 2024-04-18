@@ -28,13 +28,21 @@ const insertAtor=async function(dadosAtor){
                     '${dadosAtor.id_sexo}'
             )`
             let result=await prisma.$executeRawUnsafe(sql)
-            if(result)
-                return true
+            if(result){
+                let idAtor=selectLastID()
+                for(let ator of dadosAtor){
+                    console.log(ator)
+                }
+                let result=await prisma.$executeRawUnsafe(sql)
+                if(result)
+                    return true
+                else
+                    return false
+            }
             else
                 return false 
 
            }else{
-
             sql=`insert into tbl_ator (
                 nome,
                 data_nascimento,
@@ -125,10 +133,18 @@ const deleteAtor=async function(id){
 
 const selectAllAtores=async function(){
     try {
+        let arrayTeste=[1,2,3]
         let sql='select * from tbl_ator'
         let rsAtores=await prisma.$queryRawUnsafe(sql)
+        rsAtores.forEach(ator => {
+            ator.teste=arrayTeste
+            ator.teste.forEach(numero => {
+                console.log(numero)
+            });
+        });
         return rsAtores
     } catch (error) {
+        console.log(error)
         return false
     }
 }

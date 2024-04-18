@@ -15,7 +15,10 @@ const selectAllNacionalidades=async function(){
 
 const selectByIDNacionalidade=async function(id){
     try {
-        let sql=`select * from tbl_nacionalidade where id=${id}`
+        let sql=`select n.nome from tbl_nacionalidade_ator as i
+        join tbl_nacionalidade as n on i.id_nacionalidade=n.id
+        join tbl_ator as a on i.id_ator=a.id
+        where a.id=${id}`
         let rsNacionalidade=await prisma.$queryRawUnsafe(sql)
         return rsNacionalidade
     } catch (error) {
