@@ -3,8 +3,8 @@ const cors=require('cors')
 const bodyParser=require('body-parser')
 const app=express()
 app.use((request,response,next) =>{
-    response.header('Acess-Control-Allow-Origin','*')
-    response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    response.header('Access-Control-Allow-Origin','*')
+    response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     app.use(cors())
     next()
 })
@@ -12,6 +12,7 @@ app.use((request,response,next) =>{
 const controllerFilmes=require('./controller/controller_filmes.js')
 const controllerGeneros=require('./controller/controller_generos.js')
 const controllerClassificacoes=require('./controller/controller_classificacao.js')
+const controllerAtores=require('./controller/controller_atores.js')
 
 const bodyParserJSON=bodyParser.json()
 
@@ -161,7 +162,7 @@ app.get('/v2/acmefilmes/classificacao/:id', cors(), async function(request, resp
 
 //buscar classificaçao pela faixa etaria
 app.get('/v2/acmefilmes/classificacoes/classificacao',cors(),async function(request, response){
-    let faixaEtaria=request.query.f
+    let faixaEtaria=request.query.faixa_etaria
     let dadosClassificacao=await controllerClassificacoes.getBuscarClassificacaoPelaFaixaEtaria(faixaEtaria)
     response.status(dadosClassificacao.status_code)
     response.json(dadosClassificacao)
@@ -176,7 +177,7 @@ app.post('/v2/acmefilmes/classificacao/insert',cors(), bodyParserJSON, async fun
     response.json(resultDadosNovaClassificacao)
 })
 
-//atualizar genero
+//atualizar classificação
 app.put('/v2/acmefilmes/classificacao/update/:id', cors(), bodyParserJSON, async function(request, response){
     let idClassificacao=request.params.id
     let contentType=request.headers['content-type']
@@ -186,12 +187,66 @@ app.put('/v2/acmefilmes/classificacao/update/:id', cors(), bodyParserJSON, async
     response.json(resultDadosClassificacaoAtualizada)
 })
 
-//deletar genero
+//deletar classificação
 app.delete('/v2/acmefilmes/classificacao/delete/:id', cors(), async function(request, response){
     let idClassificacao=request.params.id
     let resultClassificacaoDeletada=await controllerClassificacoes.setExcluirClassificacao(idClassificacao)
     response.status(resultClassificacaoDeletada.status_code)
     response.json(resultClassificacaoDeletada)
+})
+
+//listar tds os atores
+app.get('/v2/acmefilmes/atores',cors(),async function(request, response){
+    let dadosAtores=await controllerAtores.getListarAtores()
+    response.status(dadosAtores.status_code)
+    response.json(dadosAtores)
+})
+
+
+//buscar ator pelo id
+app.get('/v2/acmefilmes/ator/:id', cors(), async function(request, response){
+    let idAtor=request.params.id
+    let dadosAtor=await controllerAtores.getBuscarAtorPeloID(idAtor)
+    response.status(dadosAtor.status_code)
+    response.json(dadosAtor)
+})
+
+
+//buscar ator pelo nome
+app.get('/v2/acmefilmes/atores/ator',cors(),async function(request, response){
+    let nomeAtor=request.query.nome
+    let dadosAtores=await controllerAtores.getBuscarAtorPeloNome(nomeAtor)
+    response.status(dadosAtores.status_code)
+    response.json(dadosAtores)
+})
+
+
+//inserir ator novo
+app.post('/v2/acmefilmes/ator/insert',cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let dadosBody=request.body
+    let resultDadosNovoAtor=await controllerAtores.setInserirNovoAtor(dadosBody, contentType)
+    response.status(resultDadosNovoAtor.status_code)
+    response.json(resultDadosNovoAtor)
+})
+
+
+//atualizar ator
+app.put('/v2/acmefilmes/ator/update/:id', cors(), bodyParserJSON, async function(request, response){
+    let idFilme=request.params.id
+    let contentType=request.headers['content-type']
+    let dadosBody=request.body
+    let resultDadosNovoFilme=await controllerFilmes.setAtualizarFilme(idFilme, dadosBody, contentType)
+    response.status(resultDadosNovoFilme.status_code)
+    response.json(resultDadosNovoFilme)
+})
+
+//deletar ator
+app.delete('/v2/acmefilmes/ator/delete/:id', cors(), async function(request, response){
+    let idFilme=request.params.id
+    let resultFilmeDeletado=await controllerFilmes.setExcluirFilme(idFilme)
+    response.status(resultFilmeDeletado.status_code)
+    response.json(resultFilmeDeletado)
 })
 
 app.listen('8080',function(){

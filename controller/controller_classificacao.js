@@ -128,8 +128,9 @@ const getBuscarClassificacaoPeloID = async function (id) {
 const getBuscarClassificacaoPelaFaixaEtaria = async function (faixa_etaria) {
     try {
         let faixaEtaria = faixa_etaria
+        console.log(faixaEtaria)
         let classificacoesJSON = {}
-        if (faixaEtaria == '' || faixaEtaria == undefined || !isNaN(faixaEtaria))
+        if (faixaEtaria == '' || faixaEtaria == undefined || isNaN(faixaEtaria))
             return message.ERROR_INVALID_ID
         else {
             let dadosClassificacao = await classificacaoDAO.selectByFaixaEtariaClassificacao(faixaEtaria)

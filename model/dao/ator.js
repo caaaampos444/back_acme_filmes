@@ -8,22 +8,24 @@ const insertAtor=async function(dadosAtor){
 
         let sql
 
-        if(dadosFilme.data_falecimento!=''&&
-           dadosFilme.data_falecimento!=null&&
-           dadosFilme.data_falecimento!=undefined){
+        if(dadosAtor.data_falecimento!=''&&
+           dadosAtor.data_falecimento!=null&&
+           dadosAtor.data_falecimento!=undefined){
 
             sql=`insert into tbl_ator (
                 nome,
                 data_nascimento,
+                data_falecimento,
                 biografia,
                 foto,
                 id_sexo
             ) values(
-                    '${dadosFilme.nome}',
-                    '${dadosFilme.data_nascimento}',
-                    '${dadosFilme.biografia}',
-                    '${dadosFilme.foto}',
-                    '${dadosFilme.id_sexo}'
+                    '${dadosAtor.nome}',
+                    '${dadosAtor.data_nascimento}',
+                    '${dadosAtor.data_falecimento}',
+                    '${dadosAtor.biografia}',
+                    '${dadosAtor.foto}',
+                    '${dadosAtor.id_sexo}'
             )`
             let result=await prisma.$executeRawUnsafe(sql)
             if(result)
@@ -33,22 +35,20 @@ const insertAtor=async function(dadosAtor){
 
            }else{
 
-            sql=`insert into tbl_filme (
+            sql=`insert into tbl_ator (
                 nome,
-                sinopse,
-                duracao,
-                data_lancamento,
-                data_relancamento,
-                foto_capa,
-                valor_unitario
+                data_nascimento,
+                data_falecimento,
+                biografia,
+                foto,
+                id_sexo
             ) values(
-                    '${dadosFilme.nome}',
-                    '${dadosFilme.sinopse}',
-                    '${dadosFilme.duracao}',
-                    '${dadosFilme.data_lancamento}',
+                    '${dadosAtor.nome}',
+                    '${dadosAtor.data_nascimento}',
                     null,
-                    '${dadosFilme.foto_capa}',
-                    '${dadosFilme.valor_unitario}'
+                    '${dadosAtor.biografia}',
+                    '${dadosAtor.foto}',
+                    '${dadosAtor.id_sexo}'
             )`
             let result=await prisma.$executeRawUnsafe(sql)
             if(result)
@@ -58,29 +58,30 @@ const insertAtor=async function(dadosAtor){
 
            }  
     } catch (error) {
+        console.log(error)
         return false
     }
 }
 
-const updateAtor=async function(id, dadosFilme){
+const updateAtor=async function(id, dadosAtor){
     try {
         let sql
-        if(dadosFilme.data_relancamento!=''&&
-           dadosFilme.data_relancamento!=null&&
-           dadosFilme.data_relancamento!=undefined){
+        if(dadosAtor.data_falecimento!=''&&
+           dadosAtor.data_falecimento!=null&&
+           dadosAtor.data_falecimento!=undefined){
 
             
             sql=`
-            update tbl_filme 
+            update tbl_ator 
 
             set 
-                nome='${dadosFilme.nome}',
-                sinopse='${dadosFilme.sinopse}',
-                duracao='${dadosFilme.duracao}',
-                data_lancamento='${dadosFilme.data_lancamento}',
-                data_relancamento='${dadosFilme.data_relancamento}',
-                foto_capa='${dadosFilme.foto_capa}',
-                valor_unitario='${dadosFilme.valor_unitario}'
+                nome='${dadosAtor.nome}',
+                sinopse='${dadosAtor.sinopse}',
+                duracao='${dadosAtor.duracao}',
+                data_lancamento='${dadosAtor.data_lancamento}',
+                data_falecimento='${dadosAtor.data_falecimento}',
+                foto_capa='${dadosAtor.foto_capa}',
+                valor_unitario='${dadosAtor.valor_unitario}'
 
             where id='${id}';
         `
@@ -89,15 +90,15 @@ const updateAtor=async function(id, dadosFilme){
 
             sql=`
 
-            update tbl_filme 
+            update tbl_ator 
 
             set 
-                nome='${dadosFilme.nome}',
-                sinopse='${dadosFilme.sinopse}',
-                duracao='${dadosFilme.duracao}',
-                data_lancamento='${dadosFilme.data_lancamento}',
-                foto_capa='${dadosFilme.foto_capa}',
-                valor_unitario=${dadosFilme.valor_unitario}
+                nome='${dadosAtor.nome}',
+                sinopse='${dadosAtor.sinopse}',
+                duracao='${dadosAtor.duracao}',
+                data_lancamento='${dadosAtor.data_lancamento}',
+                foto_capa='${dadosAtor.foto_capa}',
+                valor_unitario=${dadosAtor.valor_unitario}
 
             where id='${id}';
         `
@@ -114,9 +115,9 @@ const updateAtor=async function(id, dadosFilme){
 
 const deleteAtor=async function(id){
     try {
-        let sql=`delete from tbl_filme where id=${id}`
-        let rsFilme=await prisma.$executeRawUnsafe(sql)
-        return rsFilme
+        let sql=`delete from tbl_ator where id=${id}`
+        let rsAtor=await prisma.$executeRawUnsafe(sql)
+        return rsAtor
     } catch (error) {
         return false
     }
@@ -124,9 +125,9 @@ const deleteAtor=async function(id){
 
 const selectAllAtores=async function(){
     try {
-        let sql='select * from tbl_filme'
-        let rsFilmes=await prisma.$queryRawUnsafe(sql)
-        return rsFilmes
+        let sql='select * from tbl_ator'
+        let rsAtores=await prisma.$queryRawUnsafe(sql)
+        return rsAtores
     } catch (error) {
         return false
     }
@@ -134,20 +135,19 @@ const selectAllAtores=async function(){
 
 const selectByIdAtor=async function(id){
     try {
-        let sql=`select * from tbl_filme where id=${id}`
-        let rsFilme=await prisma.$queryRawUnsafe(sql)
-        return rsFilme
+        let sql=`select * from tbl_ator where id=${id}`
+        let rsAtor=await prisma.$queryRawUnsafe(sql)
+        return rsAtor
     } catch (error) {
         return false
     }
 }
 
 const selectByNomeAtor=async function(nome){
-    let nomeFilme=nome
     try {
-        let sql=`select * from tbl_filme where nome like "%${nomeFilme}%"`
-        let rsFilmes=await prisma.$queryRawUnsafe(sql)
-        return rsFilmes
+        let sql=`select * from tbl_ator where nome like "%${nome}%"`
+        let rsAtores=await prisma.$queryRawUnsafe(sql)
+        return rsAtores
     } catch (error) {
         return false
     }
@@ -155,7 +155,7 @@ const selectByNomeAtor=async function(nome){
 
 const selectLastID=async function(){
     try {
-        let sql='select cast(last_insert_id() as decimal) as id from tbl_filme limit 1;'
+        let sql='select cast(last_insert_id() as decimal) as id from tbl_ator limit 1;'
         let rsID=await prisma.$queryRawUnsafe(sql)
         return rsID
     } catch (error) {
