@@ -149,6 +149,12 @@ const getBuscarDiretorPeloID=async function(id){
             let dadosDiretor=await diretorDAO.selectByIdDiretor(idDiretor)
             if(dadosDiretor){
                 if(dadosDiretor.length>0){
+                    for (let diretor of dadosDiretor){
+                        diretor.filmes = await diretorDAO.selectFilmes(diretor.id)
+                        diretor.sexo = await sexoDAO.selectByIDSexo(diretor.id_sexo)
+                        diretor.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidadeDiretor(diretor.id)
+                        delete diretor.id_sexo
+                    }
                     diretoresJSON.diretor=dadosDiretor
                     diretoresJSON.status_code=200
                     return diretoresJSON
@@ -172,6 +178,12 @@ const getBuscarDiretorPeloNome=async function(nome){
             let dadosDiretores=await diretorDAO.selectByNomeDiretor(nomeDiretor)
             if(dadosDiretores){
                 if(dadosDiretores.length>0){
+                    for (let diretor of dadosDiretores){
+                        diretor.filmes = await diretorDAO.selectFilmes(diretor.id)
+                        diretor.sexo = await sexoDAO.selectByIDSexo(diretor.id_sexo)
+                        diretor.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidadeDiretor(diretor.id)
+                        delete diretor.id_sexo
+                    }
                     diretoresJSON.diretores=dadosDiretores
                     diretoresJSON.status_code=200
                     return diretoresJSON
