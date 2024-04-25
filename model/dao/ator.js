@@ -8,6 +8,7 @@ const insertAtor=async function(dadosAtor){
 
         let sql
 
+        //caso o ator ja tenha falecido
         if(dadosAtor.data_falecimento!=''&&
            dadosAtor.data_falecimento!=null&&
            dadosAtor.data_falecimento!=undefined){
@@ -29,20 +30,31 @@ const insertAtor=async function(dadosAtor){
             )`
             let result=await prisma.$executeRawUnsafe(sql)
             if(result){
-                let idAtor=selectLastID()
-                for(let ator of dadosAtor){
-                    console.log(ator)
+                let idAtor=await selectLastID()
+                for(let nacionalidade of dadosAtor.id_nacionalidade){
+                    sql=`insert into tbl_nacionalidade_ator(
+                            id_nacionalidade,
+                            id_ator
+                        ) values(
+                            ${nacionalidade},
+                            ${idAtor[0].id}
+                        )`
+                    let result=await prisma.$executeRawUnsafe(sql)
+                    //enquanto os dados estiverem sendo inseridos o loop vai continuar, caso aconteça algum erro, o código para e retorna falso
+                    if(result)
+                        continue
+                    else
+                        return false
                 }
-                let result=await prisma.$executeRawUnsafe(sql)
-                if(result)
-                    return true
-                else
-                    return false
+                //caso chegue até aqui é pq inseriu corretamente os dados da nacionalidade, então só retorna verdadeiro para indicar q deu certo
+                return true
             }
+            //se o result n deu certo nada deu certo ent retorna falso
             else
                 return false 
-
-           }else{
+           }
+           //caso o ator nao tenha falecido
+           else{
             sql=`insert into tbl_ator (
                 nome,
                 data_nascimento,
@@ -59,11 +71,26 @@ const insertAtor=async function(dadosAtor){
                     '${dadosAtor.id_sexo}'
             )`
             let result=await prisma.$executeRawUnsafe(sql)
-            if(result)
+            if(result){
+                let idAtor=await selectLastID()
+                for(let nacionalidade of dadosAtor.id_nacionalidade){
+                    sql=`insert into tbl_nacionalidade_ator(
+                            id_nacionalidade,
+                            id_ator
+                        ) values(
+                            ${nacionalidade},
+                            ${idAtor[0].id}
+                        )`
+                    let result=await prisma.$executeRawUnsafe(sql)
+                    if(result)
+                        continue
+                    else
+                        return false
+                }
                 return true
+            }
             else
                 return false 
-
            }  
     } catch (error) {
         console.log(error)
@@ -123,9 +150,15 @@ const updateAtor=async function(id, dadosAtor){
 
 const deleteAtor=async function(id){
     try {
-        let sql=`delete from tbl_ator where id=${id}`
-        let rsAtor=await prisma.$executeRawUnsafe(sql)
-        return rsAtor
+        let sql=`delete from tbl_nacionalidade_ator where id_ator=${id}`
+        let rsIntermediaria=await prisma.$executeRawUnsafe(sql)
+        if(rsIntermediaria){
+            sql=`delete from tbl_ator where id=${id}`
+            let rsAtor=await prisma.$executeRawUnsafe(sql)
+            return rsAtor
+        }else{
+            return false
+        }
     } catch (error) {
         return false
     }
@@ -133,15 +166,15 @@ const deleteAtor=async function(id){
 
 const selectAllAtores=async function(){
     try {
-        let arrayTeste=[1,2,3]
+        //let arrayTeste=[1,2,3]
         let sql='select * from tbl_ator'
         let rsAtores=await prisma.$queryRawUnsafe(sql)
-        rsAtores.forEach(ator => {
-            ator.teste=arrayTeste
-            ator.teste.forEach(numero => {
-                console.log(numero)
-            });
-        });
+        // rsAtores.forEach(ator => {
+        //     ator.teste=arrayTeste
+        //     ator.teste.forEach(numero => {
+        //         console.log(numero)
+        //     });
+        // });
         return rsAtores
     } catch (error) {
         console.log(error)

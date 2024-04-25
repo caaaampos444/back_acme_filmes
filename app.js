@@ -243,10 +243,10 @@ app.put('/v2/acmefilmes/ator/update/:id', cors(), bodyParserJSON, async function
 
 //deletar ator
 app.delete('/v2/acmefilmes/ator/delete/:id', cors(), async function(request, response){
-    let idFilme=request.params.id
-    let resultFilmeDeletado=await controllerFilmes.setExcluirFilme(idFilme)
-    response.status(resultFilmeDeletado.status_code)
-    response.json(resultFilmeDeletado)
+    let idAtor=request.params.id
+    let resultAtorDeletado=await controllerAtores.setExcluirAtor(idAtor)
+    response.status(resultAtorDeletado.status_code)
+    response.json(resultAtorDeletado)
 })
 
 app.listen('8080',function(){

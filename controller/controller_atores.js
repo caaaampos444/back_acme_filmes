@@ -6,7 +6,6 @@ const message=require('../module/config.js')
 const setInserirNovoAtor=async function(dadosAtor, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
-            let dadosNacionalidades=await nacionalidadeDAO.selectAllNacionalidades()
             let novoAtorJSON={}
             let ultimoID
             if(
@@ -15,7 +14,7 @@ const setInserirNovoAtor=async function(dadosAtor, contentType){
             dadosAtor.biografia==''        ||dadosAtor.biografia==undefined        ||dadosAtor.biografia==null             ||dadosAtor.biografia.length>65000     ||
             dadosAtor.foto==''             ||dadosAtor.foto==undefined             ||dadosAtor.foto==null                  ||dadosAtor.foto.length>150            ||
             dadosAtor.id_sexo==''          ||dadosAtor.id_sexo==undefined          ||dadosAtor.id_sexo==null               ||dadosAtor.id_sexo>2                  ||
-            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade==''        ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null 
+            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade.length==0  ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null 
             )
                 return message.ERROR_REQUIRED_FIELDS
             else{
@@ -41,7 +40,6 @@ const setInserirNovoAtor=async function(dadosAtor, contentType){
                         dadosAtor.id=ultimoID[0].id               
                         return novoAtorJSON
                     }
-    
                     else{
                         return message.ERROR_INTERNAL_SERVER_DB
                     }
@@ -94,7 +92,7 @@ const setExcluirAtor=async function(id){
         if(idAtor==''||idAtor==undefined||isNaN(idAtor))
             return message.ERROR_INVALID_ID
         else{
-            let comando=await atorDAO.deleteFilme(idAtor)
+            let comando=await atorDAO.deleteAtor(idAtor)
             if(comando)
                 return message.SUCCESS_DELETED_ITEM
             else{
