@@ -221,6 +221,19 @@ const selectLastID=async function(){
     }
 }
 
+const selectFilmes=async function(id){
+    try {
+        let sql=`select f.nome from tbl_filme_diretor as i
+        join tbl_filme as f on i.id_filme=f.id
+        join tbl_diretor as d on i.id_diretor=d.id
+        where d.id=${id}`
+        let rsFilmes=await prisma.$queryRawUnsafe(sql)
+        return rsFilmes
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports={
     insertDiretor,
     updateDiretor,
@@ -228,5 +241,6 @@ module.exports={
     selectAllDiretores,
     selectByIdDiretor,
     selectByNomeDiretor,
-    selectLastID
+    selectLastID,
+    selectFilmes
 }

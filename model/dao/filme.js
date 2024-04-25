@@ -161,6 +161,45 @@ const selectByNomeFilme=async function(nome){
     }
 }
 
+const selectAtores=async function(id){
+    try {
+        let sql=`select a.nome from tbl_filme_ator as i
+        join tbl_filme as f on i.id_filme=f.id
+        join tbl_ator as a on i.id_ator=a.id
+        where f.id=${id}`
+        let rsAtores=await prisma.$queryRawUnsafe(sql)
+        return rsAtores
+    } catch (error) {
+        return false
+    }
+}
+
+const selectDiretores=async function(id){
+    try {
+        let sql=`select d.nome from tbl_filme_diretor as i
+        join tbl_filme as f on i.id_filme=f.id
+        join tbl_diretor as d on i.id_diretor=d.id
+        where f.id=${id}`
+        let rsDiretores=await prisma.$queryRawUnsafe(sql)
+        return rsDiretores
+    } catch (error) {
+        return false
+    }
+}
+
+const selectGeneros=async function(id){
+    try {
+        let sql=`select g.nome from tbl_filme_genero as i
+        join tbl_filme as f on i.id_filme=f.id
+        join tbl_genero as g on i.id_genero=g.id
+        where f.id=${id}`
+        let rsGeneros=await prisma.$queryRawUnsafe(sql)
+        return rsGeneros
+    } catch (error) {
+        return false
+    }
+}
+
 const selectLastID=async function(){
     try {
         let sql='select cast(last_insert_id() as decimal) as id from tbl_filme limit 1;'
@@ -178,5 +217,8 @@ module.exports={
     selectAllFilmes,
     selectByIdFilme,
     selectByNomeFilme,
-    selectLastID
+    selectLastID,
+    selectAtores,
+    selectDiretores,
+    selectGeneros
 }

@@ -1,4 +1,5 @@
 const filmeDAO=require('../model/dao/filme.js')
+const classificacaoDAO=require('../model/dao/classificacao.js')
 const message=require('../module/config.js')
 
 const setInserirNovoFilme=async function(dadosFilme, contentType){
@@ -111,6 +112,13 @@ const getListarFilmes=async function(){
         if(dadosFilmes){
             if(dadosFilmes.length>0){
                 filmesJSON.filmes=dadosFilmes
+                for(let filme of dadosFilmes){
+                    filme.classificacao=await classificacaoDAO.selectByIdClassificacao(filme.id_classificacao)
+                    delete filme.id_classificacao
+                    filme.atores=await filmeDAO.selectAtores(filme.id)
+                    filme.diretores=await filmeDAO.selectDiretores(filme.id)
+                    filme.generos=await filmeDAO.selectGeneros(filme.id)
+                }
                 filmesJSON.quantidade=dadosFilmes.length
                 filmesJSON.status_code=200
                 return filmesJSON
@@ -133,9 +141,16 @@ const getBuscarFilmePeloID=async function(id){
             let dadosFilme=await filmeDAO.selectByIdFilme(idFilme)
             if(dadosFilme){
                 if(dadosFilme.length>0){
-                filmesJSON.filme=dadosFilme
-                filmesJSON.status_code=200
-                return filmesJSON
+                    for(let filme of dadosFilme){
+                        filme.classificacao=await classificacaoDAO.selectByIdClassificacao(filme.id_classificacao)
+                        delete filme.id_classificacao
+                        filme.atores=await filmeDAO.selectAtores(filme.id)
+                        filme.diretores=await filmeDAO.selectDiretores(filme.id)
+                        filme.generos=await filmeDAO.selectGeneros(filme.id)
+                    }
+                    filmesJSON.filme=dadosFilme
+                    filmesJSON.status_code=200
+                    return filmesJSON
                 }else
                     return message.ERROR_NOT_FOUND
             }else
@@ -156,6 +171,13 @@ const getBuscarFilmePeloNome=async function(nome){
             let dadosFilmes=await filmeDAO.selectByNomeFilme(nomeFilme)
             if(dadosFilmes){
                 if(dadosFilmes.length>0){
+                    for(let filme of dadosFilmes){
+                        filme.classificacao=await classificacaoDAO.selectByIdClassificacao(filme.id_classificacao)
+                        delete filme.id_classificacao
+                        filme.atores=await filmeDAO.selectAtores(filme.id)
+                        filme.diretores=await filmeDAO.selectDiretores(filme.id)
+                        filme.generos=await filmeDAO.selectGeneros(filme.id)
+                    }
                     filmesJSON.filmes=dadosFilmes
                     filmesJSON.status_code=200
                     return filmesJSON

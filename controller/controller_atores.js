@@ -119,11 +119,10 @@ const getListarAtores=async function(){
         if(dadosAtores){
             if(dadosAtores.length>0){
                 for (let ator of dadosAtores){
-                    let sexoAtor = await sexoDAO.selectByIDSexo(ator.id_sexo)
-                    let nacionalidadeAtor = await nacionalidadeDAO.selectByIDNacionalidade(ator.id)
+                    ator.filmes=await atorDAO.selectFilmes(ator.id)
+                    ator.sexo = await sexoDAO.selectByIDSexo(ator.id_sexo)
+                    ator.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidade(ator.id)
                     delete ator.id_sexo
-                    ator.sexo = sexoAtor
-                    ator.nacionalidade = nacionalidadeAtor
                 }
                 atoresJSON.atores=dadosAtores
                 atoresJSON.quantidade=dadosAtores.length
@@ -149,9 +148,15 @@ const getBuscarAtorPeloID=async function(id){
             let dadosAtor=await atorDAO.selectByIdAtor(idAtor)
             if(dadosAtor){
                 if(dadosAtor.length>0){
-                atoresJSON.ator=dadosAtor
-                atoresJSON.status_code=200
-                return atoresJSON
+                    for (let ator of dadosAtor){
+                        ator.filmes=await atorDAO.selectFilmes(ator.id)
+                        ator.sexo = await sexoDAO.selectByIDSexo(ator.id_sexo)
+                        ator.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidade(ator.id)
+                        delete ator.id_sexo
+                    }
+                    atoresJSON.ator=dadosAtor
+                    atoresJSON.status_code=200
+                    return atoresJSON
                 }else
                     return message.ERROR_NOT_FOUND
             }else
@@ -172,6 +177,12 @@ const getBuscarAtorPeloNome=async function(nome){
             let dadosAtores=await atorDAO.selectByNomeAtor(nomeAtor)
             if(dadosAtores){
                 if(dadosAtores.length>0){
+                    for (let ator of dadosAtores){
+                        ator.filmes=await atorDAO.selectFilmes(ator.id)
+                        ator.sexo = await sexoDAO.selectByIDSexo(ator.id_sexo)
+                        ator.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidade(ator.id)
+                        delete ator.id_sexo
+                    }
                     atoresJSON.atores=dadosAtores
                     atoresJSON.status_code=200
                     return atoresJSON

@@ -120,11 +120,10 @@ const getListarDiretores=async function(){
         if(dadosDiretores){
             if(dadosDiretores.length>0){
                 for (let diretor of dadosDiretores){
-                    let sexoDiretor = await sexoDAO.selectByIDSexo(diretor.id_sexo)
-                    let nacionalidadeDiretor = await nacionalidadeDAO.selectByIDNacionalidadeDiretor(diretor.id)
+                    diretor.filmes = await diretorDAO.selectFilmes(diretor.id)
+                    diretor.sexo = await sexoDAO.selectByIDSexo(diretor.id_sexo)
+                    diretor.nacionalidade = await nacionalidadeDAO.selectByIDNacionalidadeDiretor(diretor.id)
                     delete diretor.id_sexo
-                    diretor.sexo = sexoDiretor
-                    diretor.nacionalidade = nacionalidadeDiretor
                 }
                 diretoresJSON.diretores=dadosDiretores
                 diretoresJSON.quantidade=dadosDiretores.length
