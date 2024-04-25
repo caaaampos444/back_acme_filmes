@@ -12,7 +12,8 @@ app.use((request,response,next) =>{
 const controllerFilmes=require('./controller/controller_filmes.js')
 const controllerGeneros=require('./controller/controller_generos.js')
 const controllerClassificacoes=require('./controller/controller_classificacao.js')
-const controllerAtores=require('./controller/controller_atores.js')
+const controllerAtores=require('./controller/controller_atores.js') 
+const controllerDiretores=require('./controller/controller_diretores.js') 
 
 const bodyParserJSON=bodyParser.json()
 
@@ -233,12 +234,12 @@ app.post('/v2/acmefilmes/ator/insert',cors(), bodyParserJSON, async function(req
 
 //atualizar ator
 app.put('/v2/acmefilmes/ator/update/:id', cors(), bodyParserJSON, async function(request, response){
-    let idFilme=request.params.id
+    let idAtor=request.params.id
     let contentType=request.headers['content-type']
     let dadosBody=request.body
-    let resultDadosNovoFilme=await controllerFilmes.setAtualizarFilme(idFilme, dadosBody, contentType)
-    response.status(resultDadosNovoFilme.status_code)
-    response.json(resultDadosNovoFilme)
+    let resultDadosAtorAtualizado=await controllerAtores.setAtualizarAtor(idAtor, dadosBody, contentType)
+    response.status(resultDadosAtorAtualizado.status_code)
+    response.json(resultDadosAtorAtualizado)
 })
 
 //deletar ator
@@ -247,6 +248,60 @@ app.delete('/v2/acmefilmes/ator/delete/:id', cors(), async function(request, res
     let resultAtorDeletado=await controllerAtores.setExcluirAtor(idAtor)
     response.status(resultAtorDeletado.status_code)
     response.json(resultAtorDeletado)
+})
+
+//listar tds os diretores
+app.get('/v2/acmefilmes/diretores',cors(),async function(request, response){
+    let dadosDiretores=await controllerDiretores.getListarDiretores()
+    response.status(dadosDiretores.status_code)
+    response.json(dadosDiretores)
+})
+
+
+//buscar diretor pelo id
+app.get('/v2/acmefilmes/diretor/:id', cors(), async function(request, response){
+    let idDiretor=request.params.id
+    let dadosDiretor=await controllerDiretores.getBuscarDiretorPeloID(idDiretor)
+    response.status(dadosDiretor.status_code)
+    response.json(dadosDiretor)
+})
+
+
+//buscar diretor pelo nome
+app.get('/v2/acmefilmes/diretores/diretor',cors(),async function(request, response){
+    let nomeDiretor=request.query.nome
+    let dadosDiretores=await controllerDiretores.getBuscarDiretorPeloNome(nomeDiretor)
+    response.status(dadosDiretores.status_code)
+    response.json(dadosDiretores)
+})
+
+
+//inserir diretor novo
+app.post('/v2/acmefilmes/diretor/insert',cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let dadosBody=request.body
+    let resultDadosNovoDiretor=await controllerDiretores.setInserirNovoDiretor(dadosBody, contentType)
+    response.status(resultDadosNovoDiretor.status_code)
+    response.json(resultDadosNovoDiretor)
+})
+
+
+//atualizar diretor
+app.put('/v2/acmefilmes/diretor/update/:id', cors(), bodyParserJSON, async function(request, response){
+    let idDiretor=request.params.id
+    let contentType=request.headers['content-type']
+    let dadosBody=request.body
+    let resultDadosDiretorAtualizado=await controllerDiretores.setAtualizarDiretor(idDiretor, dadosBody, contentType)
+    response.status(resultDadosDiretorAtualizado.status_code)
+    response.json(resultDadosDiretorAtualizado)
+})
+
+//deletar diretor
+app.delete('/v2/acmefilmes/diretor/delete/:id', cors(), async function(request, response){
+    let idDiretor=request.params.id
+    let resultDiretorDeletado=await controllerDiretores.setExcluirDiretor(idDiretor)
+    response.status(resultDiretorDeletado.status_code)
+    response.json(resultDiretorDeletado)
 })
 
 app.listen('8080',function(){

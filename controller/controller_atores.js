@@ -6,15 +6,22 @@ const message=require('../module/config.js')
 const setInserirNovoAtor=async function(dadosAtor, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
+            function saoInteiros(dados) {
+                return dados.id_nacionalidade.every(function(valor) {
+                  return Number.isInteger(valor)
+                });
+            }
             let novoAtorJSON={}
             let ultimoID
+            let verificaDadosNacionalidade=saoInteiros(dadosAtor)
             if(
             dadosAtor.nome==''             ||dadosAtor.nome==undefined             ||dadosAtor.nome==null                  ||dadosAtor.nome.length>100            ||
             dadosAtor.data_nascimento==''  ||dadosAtor.data_nascimento==undefined  ||dadosAtor.data_nascimento==null       ||dadosAtor.data_nascimento.length!=10 ||
             dadosAtor.biografia==''        ||dadosAtor.biografia==undefined        ||dadosAtor.biografia==null             ||dadosAtor.biografia.length>65000     ||
             dadosAtor.foto==''             ||dadosAtor.foto==undefined             ||dadosAtor.foto==null                  ||dadosAtor.foto.length>150            ||
             dadosAtor.id_sexo==''          ||dadosAtor.id_sexo==undefined          ||dadosAtor.id_sexo==null               ||dadosAtor.id_sexo>2                  ||
-            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade.length==0  ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null 
+            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade.length==0  ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null     ||
+            verificaDadosNacionalidade==false
             )
                 return message.ERROR_REQUIRED_FIELDS
             else{
@@ -59,23 +66,24 @@ const setAtualizarAtor=async function(id, dadosAtor, contentType){
             let idAtor=id
             if(idAtor==''||idAtor==undefined||isNaN(idAtor))
                 return message.ERROR_INVALID_ID
+            else if(dadosAtor.id_nacionalidade==null||dadosAtor.id_nacionalidade==undefined)
+                return message.ERROR_REQUIRED_FIELDS
             else{
-                let filme=await atorDAO.selectByIdAtor(idAtor)
-                if(filme){
-                    let filmeAtualizadoJSON={}
-                    let filmeAtualizado=await atorDAO.updateFilme(idAtor, dadosAtor)
-                    if(filmeAtualizado){
-                        filmeAtualizadoJSON.filme=dadosAtor
-                        filmeAtualizadoJSON.status=message.SUCCES_UPDATED_ITEM.status
-                        filmeAtualizadoJSON.status_code=message.SUCCES_UPDATED_ITEM.status_code
-                        filmeAtualizadoJSON.message=message.SUCCES_UPDATED_ITEM.message
-                        return filmeAtualizadoJSON
+                let ator=await atorDAO.selectByIdAtor(idAtor)
+                if(ator){
+                    let atorAtualizadoJSON={}
+                    let atorAtualizado=await atorDAO.updateAtor(idAtor, dadosAtor)
+                    if(atorAtualizado){
+                        atorAtualizadoJSON.ator=dadosAtor
+                        atorAtualizadoJSON.status=message.SUCCES_UPDATED_ITEM.status
+                        atorAtualizadoJSON.status_code=message.SUCCES_UPDATED_ITEM.status_code
+                        atorAtualizadoJSON.message=message.SUCCES_UPDATED_ITEM.message
+                        return atorAtualizadoJSON
                     }
-                    else{
+                    else
                         return message.ERROR_NOT_FOUND
-                    }
                 }
-                else
+                else 
                     return message.ERROR_NOT_FOUND
             }
         }else{
@@ -141,7 +149,7 @@ const getBuscarAtorPeloID=async function(id){
             let dadosAtor=await atorDAO.selectByIdAtor(idAtor)
             if(dadosAtor){
                 if(dadosAtor.length>0){
-                atoresJSON.filme=dadosAtor
+                atoresJSON.ator=dadosAtor
                 atoresJSON.status_code=200
                 return atoresJSON
                 }else

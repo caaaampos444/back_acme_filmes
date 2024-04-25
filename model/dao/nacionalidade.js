@@ -26,6 +26,19 @@ const selectByIDNacionalidade=async function(id){
     }
 }
 
+const selectByIDNacionalidadeDiretor=async function(id){
+    try {
+        let sql=`select n.nome from tbl_nacionalidade_diretor as i
+        join tbl_nacionalidade as n on i.id_nacionalidade=n.id
+        join tbl_diretor as d on i.id_diretor=d.id
+        where d.id=${id}`
+        let rsNacionalidade=await prisma.$queryRawUnsafe(sql)
+        return rsNacionalidade
+    } catch (error) {
+        return false
+    }
+}
+
 const selectByNomeNacionalidade=async function(nome){
     try {
         let sql=`select * from tbl_nacionalidade where nome like "%${nome}%"`
@@ -39,5 +52,6 @@ const selectByNomeNacionalidade=async function(nome){
 module.exports={
     selectAllNacionalidades,
     selectByIDNacionalidade,
-    selectByNomeNacionalidade
+    selectByNomeNacionalidade,
+    selectByIDNacionalidadeDiretor
 }
