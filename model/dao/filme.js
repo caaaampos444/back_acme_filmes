@@ -174,12 +174,27 @@ const updateFilme=async function(id, dadosFilme){
 
 const deleteFilme=async function(id){
     try {
-        let sql=`delete from tbl_filme_ator where id_filme=${id};
-        delete from tbl_filme_genero where id_filme=${id};
-        delete from tbl_filme_diretor where id_filme=${id};
-        delete from tbl_filme where id=${id};`
+        let sql=`delete from tbl_filme_ator where id_filme=${id};`
         let rsFilme=await prisma.$executeRawUnsafe(sql)
-        return rsFilme
+        if(rsFilme){
+            sql=`delete from tbl_filme_genero where id_filme=${id};`
+            rsFilme=await prisma.$executeRawUnsafe(sql)
+            if(rsFilme){
+                sql=`delete from tbl_filme_diretor where id_filme=${id}`
+                rsFilme=await prisma.$executeRawUnsafe(sql)
+                if(rsFilme){
+                    sql=`delete from tbl_filme where id=${id}`
+                    rsFilme=await prisma.$executeRawUnsafe(sql)
+                    rs
+                }
+                else
+                    return rsFilme
+            }
+            else
+                return rsFilme
+        }
+        else
+            return rsFilme
     } catch (error) {
         return false
     }
