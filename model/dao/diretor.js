@@ -31,7 +31,6 @@ const insertDiretor=async function(dadosDiretor){
             let result=await prisma.$executeRawUnsafe(sql)
             if(result){
                 let idDiretor=await selectLastID()
-                //se os dados do diretor foram inseridos corretamente na tabela de diretor, vai começar a inserir os dados da nacionalidade na tabela intermediaria
                 for(let nacionalidade of dadosDiretor.id_nacionalidade){
                     sql=`insert into tbl_nacionalidade_diretor(
                             id_nacionalidade,
