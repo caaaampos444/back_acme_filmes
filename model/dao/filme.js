@@ -7,7 +7,6 @@ const insertFilme=async function(dadosFilme){
     try {
 
         let sql
-
         if(dadosFilme.data_relancamento!=''&&
            dadosFilme.data_relancamento!=null&&
            dadosFilme.data_relancamento!=undefined){
@@ -29,7 +28,7 @@ const insertFilme=async function(dadosFilme){
                     '${dadosFilme.data_relancamento}',
                     '${dadosFilme.foto_capa}',
                     '${dadosFilme.valor_unitario}',
-                    ${dadosFilme.id_classificacao}
+                     ${dadosFilme.id_classificacao}
             )`
             let result=await prisma.$executeRawUnsafe(sql)
             if(result)
@@ -46,7 +45,8 @@ const insertFilme=async function(dadosFilme){
                 data_lancamento,
                 data_relancamento,
                 foto_capa,
-                valor_unitario
+                valor_unitario,
+                id_classificacao
             ) values(
                     '${dadosFilme.nome}',
                     '${dadosFilme.sinopse}',
@@ -55,7 +55,7 @@ const insertFilme=async function(dadosFilme){
                     null,
                     '${dadosFilme.foto_capa}',
                     '${dadosFilme.valor_unitario}',
-                    ${dadosFilme.id_classificacao}
+                     ${dadosFilme.id_classificacao}
             )`
             let result=await prisma.$executeRawUnsafe(sql)
             if(result)
@@ -116,6 +116,7 @@ const updateFilme=async function(id, dadosFilme){
         else
             return false
     } catch (error) {
+        console.log(error)
         return false
     }
 }

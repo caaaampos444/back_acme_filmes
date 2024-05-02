@@ -20,8 +20,8 @@ const setInserirNovoAtor=async function(dadosAtor, contentType){
             dadosAtor.biografia==''        ||dadosAtor.biografia==undefined        ||dadosAtor.biografia==null             ||dadosAtor.biografia.length>65000     ||
             dadosAtor.foto==''             ||dadosAtor.foto==undefined             ||dadosAtor.foto==null                  ||dadosAtor.foto.length>150            ||
             dadosAtor.id_sexo==''          ||dadosAtor.id_sexo==undefined          ||dadosAtor.id_sexo==null               ||dadosAtor.id_sexo>2                  ||
-            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade.length==0  ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null     ||
-            verificaDadosNacionalidade==false
+            isNaN(dadosAtor.id_sexo)       ||dadosAtor.id_nacionalidade.length==0  ||dadosAtor.id_nacionalidade==undefined ||dadosAtor.id_nacionalidade==null     
+        
             )
                 return message.ERROR_REQUIRED_FIELDS
             else{
