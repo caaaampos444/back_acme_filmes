@@ -58,8 +58,59 @@ const insertFilme=async function(dadosFilme){
                      ${dadosFilme.id_classificacao}
             )`
             let result=await prisma.$executeRawUnsafe(sql)
-            if(result)
+            if(result){
+                let idFilme=await selectLastID()
+                //loop para inserir os generos na tabela intermediária
+                for(let genero of dadosFilme.id_genero){
+                    sql=`insert into tbl_filme_genero(
+                            id_filme,
+                            id_genero
+                        ) values(
+                            ${idFilme[0].id},
+                            ${genero}
+                        )`
+                    let result=await prisma.$executeRawUnsafe(sql)
+                    //enquanto os dados estiverem sendo inseridos o loop vai continuar, caso aconteça algum erro, o código para e retorna falso
+                    if(result)
+                        continue
+                    else
+                        return false
+                }
+                //loop para inserir os atores na tabela intermediária
+                for(let ator of dadosFilme.id_ator){
+                    sql=`insert into tbl_filme_ator(
+                            id_filme,
+                            id_ator
+                        ) values(
+                            ${idFilme[0].id},
+                            ${ator}
+                        )`
+                    let result=await prisma.$executeRawUnsafe(sql)
+                    //enquanto os dados estiverem sendo inseridos o loop vai continuar, caso aconteça algum erro, o código para e retorna falso
+                    if(result)
+                        continue
+                    else
+                        return false
+                }
+                //loop para inserir os diretores na tabela intermediária
+                for(let diretor of dadosFilme.id_diretor){
+                    sql=`insert into tbl_filme_diretor(
+                            id_filme,
+                            id_diretor
+                        ) values(
+                            ${idFilme[0].id},
+                            ${diretor}
+                        )`
+                    let result=await prisma.$executeRawUnsafe(sql)
+                    //enquanto os dados estiverem sendo inseridos o loop vai continuar, caso aconteça algum erro, o código para e retorna falso
+                    if(result)
+                        continue
+                    else
+                        return false
+                }
+                //caso chegue até aqui é pq inseriu corretamente os dados da nacionalidade, então só retorna verdadeiro para indicar q deu certo
                 return true
+            }
             else
                 return false 
 
@@ -123,7 +174,10 @@ const updateFilme=async function(id, dadosFilme){
 
 const deleteFilme=async function(id){
     try {
-        let sql=`delete from tbl_filme where id=${id}`
+        let sql=`delete from tbl_filme_ator where id_filme=${id};
+        delete from tbl_filme_genero where id_filme=${id};
+        delete from tbl_filme_diretor where id_filme=${id};
+        delete from tbl_filme where id=${id};`
         let rsFilme=await prisma.$executeRawUnsafe(sql)
         return rsFilme
     } catch (error) {
