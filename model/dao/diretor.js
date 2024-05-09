@@ -138,16 +138,16 @@ const updateDiretor=async function(id, dadosDiretor){
         }
         let result=await prisma.$executeRawUnsafe(sql)
         if(result){
+            sql=`delete from tbl_nacionalidade_diretor where id_diretor=${id}`
+            result=await prisma.$executeRawUnsafe(sql)
             for(let nacionalidade of dadosDiretor.id_nacionalidade){
-                sql=`
-                    update tbl_nacionalidade_diretor
-                        
-                    set
-                        id_nacionalidade=${nacionalidade},
-                        id_diretor=${id}
-                    
-                    where id_diretor=${id}
-                `
+                sql=`insert into tbl_nacionalidade_diretor(
+                    id_nacionalidade,
+                    id_diretor
+                ) values(
+                    ${nacionalidade},
+                    ${id}
+                )`
                 let result=await prisma.$executeRawUnsafe(sql)
                 if(result)
                     continue

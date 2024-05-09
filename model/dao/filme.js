@@ -108,7 +108,7 @@ const insertFilme=async function(dadosFilme){
                     else
                         return false
                 }
-                //caso chegue até aqui é pq inseriu corretamente os dados da nacionalidade, então só retorna verdadeiro para indicar q deu certo
+                //caso chegue até aqui é pq inseriu corretamente os dados da genero, então só retorna verdadeiro para indicar q deu certo
                 return true
             }
             else
@@ -139,7 +139,8 @@ const updateFilme=async function(id, dadosFilme){
                 data_lancamento='${dadosFilme.data_lancamento}',
                 data_relancamento='${dadosFilme.data_relancamento}',
                 foto_capa='${dadosFilme.foto_capa}',
-                valor_unitario='${dadosFilme.valor_unitario}'
+                valor_unitario='${dadosFilme.valor_unitario}',
+                id_classificacao='${dadosFilme.id_classificacao}'
 
             where id='${id}';
         `
@@ -156,14 +157,64 @@ const updateFilme=async function(id, dadosFilme){
                 duracao='${dadosFilme.duracao}',
                 data_lancamento='${dadosFilme.data_lancamento}',
                 foto_capa='${dadosFilme.foto_capa}',
-                valor_unitario=${dadosFilme.valor_unitario}
+                valor_unitario=${dadosFilme.valor_unitario},
+                id_classificacao='${dadosFilme.id_classificacao}'
 
             where id='${id}';
         `
         }
         let result=await prisma.$executeRawUnsafe(sql)
-        if(result)
+        if(result){
+            sql=`delete from tbl_filme_genero where id_filme=${id}`
+            result=await prisma.$executeRawUnsafe(sql)
+            for(let genero of dadosFilme.id_genero){
+                sql=`insert into tbl_filme_genero(
+                    id_filme,
+                    id_genero
+                ) values(
+                    ${id},
+                    ${genero}
+                )`
+                let result=await prisma.$executeRawUnsafe(sql)
+                if(result)
+                    continue
+                else
+                    return false
+            }
+            sql=`delete from tbl_filme_ator where id_filme=${id}`
+            result=await prisma.$executeRawUnsafe(sql)
+            for(let ator of dadosFilme.id_ator){
+                sql=`insert into tbl_filme_ator(
+                    id_filme,
+                    id_ator
+                ) values(
+                    ${id},
+                    ${ator}
+                )`
+                let result=await prisma.$executeRawUnsafe(sql)
+                if(result)
+                    continue
+                else
+                    return false
+            }
+            sql=`delete from tbl_filme_diretor where id_filme=${id}`
+            result=await prisma.$executeRawUnsafe(sql)
+            for(let diretor of dadosFilme.id_diretor){
+                sql=`insert into tbl_filme_diretor(
+                    id_filme,
+                    id_diretor
+                ) values(
+                    ${id},
+                    ${diretor}
+                )`
+                let result=await prisma.$executeRawUnsafe(sql)
+                if(result)
+                    continue
+                else
+                    return false
+            }
             return true
+        }
         else
             return false
     } catch (error) {
@@ -185,7 +236,7 @@ const deleteFilme=async function(id){
                 if(rsFilme){
                     sql=`delete from tbl_filme where id=${id}`
                     rsFilme=await prisma.$executeRawUnsafe(sql)
-                    rs
+                    return rsFilme
                 }
                 else
                     return rsFilme
@@ -233,7 +284,7 @@ const selectByNomeFilme=async function(nome){
 
 const selectAtores=async function(id){
     try {
-        let sql=`select a.nome from tbl_filme_ator as i
+        let sql=`select a.nome, a.id from tbl_filme_ator as i
         join tbl_filme as f on i.id_filme=f.id
         join tbl_ator as a on i.id_ator=a.id
         where f.id=${id}`
@@ -246,7 +297,7 @@ const selectAtores=async function(id){
 
 const selectDiretores=async function(id){
     try {
-        let sql=`select d.nome from tbl_filme_diretor as i
+        let sql=`select d.nome, d.id from tbl_filme_diretor as i
         join tbl_filme as f on i.id_filme=f.id
         join tbl_diretor as d on i.id_diretor=d.id
         where f.id=${id}`
@@ -259,7 +310,7 @@ const selectDiretores=async function(id){
 
 const selectGeneros=async function(id){
     try {
-        let sql=`select g.nome from tbl_filme_genero as i
+        let sql=`select g.nome, g.id from tbl_filme_genero as i
         join tbl_filme as f on i.id_filme=f.id
         join tbl_genero as g on i.id_genero=g.id
         where f.id=${id}`

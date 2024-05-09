@@ -18,10 +18,9 @@ const setInserirNovoDiretor=async function(dadosDiretor, contentType){
             dadosDiretor.nome==''             ||dadosDiretor.nome==undefined             ||dadosDiretor.nome==null                  ||dadosDiretor.nome.length>100            ||
             dadosDiretor.data_nascimento==''  ||dadosDiretor.data_nascimento==undefined  ||dadosDiretor.data_nascimento==null       ||dadosDiretor.data_nascimento.length!=10 ||
             dadosDiretor.biografia==''        ||dadosDiretor.biografia==undefined        ||dadosDiretor.biografia==null             ||dadosDiretor.biografia.length>65000     ||
-            dadosDiretor.foto==''             ||dadosDiretor.foto==undefined             ||dadosDiretor.foto==null                  ||dadosDiretor.foto.length>150            ||
+            dadosDiretor.foto==''             ||dadosDiretor.foto==undefined             ||dadosDiretor.foto==null                  ||dadosDiretor.foto.length>1000           ||
             dadosDiretor.id_sexo==''          ||dadosDiretor.id_sexo==undefined          ||dadosDiretor.id_sexo==null               ||dadosDiretor.id_sexo>2                  ||
-            isNaN(dadosDiretor.id_sexo)       ||dadosDiretor.id_nacionalidade.length==0  ||dadosDiretor.id_nacionalidade==undefined ||dadosDiretor.id_nacionalidade==null     ||
-            verificaDadosNacionalidade==false
+            isNaN(dadosDiretor.id_sexo)       ||dadosDiretor.id_nacionalidade.length==0  ||dadosDiretor.id_nacionalidade==undefined ||dadosDiretor.id_nacionalidade==null     
             )
                 return message.ERROR_REQUIRED_FIELDS
             else{
