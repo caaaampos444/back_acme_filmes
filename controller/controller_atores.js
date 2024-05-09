@@ -81,7 +81,7 @@ const setAtualizarAtor=async function(id, dadosAtor, contentType){
                         return atorAtualizadoJSON
                     }
                     else
-                        return message.ERROR_NOT_FOUND
+                        return message.ERROR_INTERNAL_SERVER_DB
                 }
                 else 
                     return message.ERROR_NOT_FOUND

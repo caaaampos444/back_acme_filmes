@@ -15,7 +15,7 @@ const selectAllNacionalidades=async function(){
 
 const selectByIDNacionalidade=async function(id){
     try {
-        let sql=`select n.nome from tbl_nacionalidade_ator as i
+        let sql=`select n.nome, n.id from tbl_nacionalidade_ator as i
         join tbl_nacionalidade as n on i.id_nacionalidade=n.id
         join tbl_ator as a on i.id_ator=a.id
         where a.id=${id}`
